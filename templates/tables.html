@@ -1,0 +1,87 @@
+{% extends 'wrapper.html' %}
+{% set active_page = tname %}
+{% block role %}{{role}}{% endblock %}
+{% block title %}Tables{% endblock %}
+{% block sidebar %}
+<nav class="col-md-3 d-none d-md-block sidebar container">
+<div class="sidebar-sticky">
+    {% for table in tables %}
+    {% if role == 'User' and (table != 'Admins' and table != 'Users') %}
+    <ul class="nav">
+        <li class="nav item">
+            <a href="/tables/{{table}}" {% if table == active_page %}class="nav item bg-primary text-white" {% else %}class="nav item"{% endif %}>{{table}}</a>
+        </li>
+    </ul>
+    {% elif role == 'Administrator' and table not in ('Country list', 'Recipes list', 'Finance report') %}
+    <ul class="nav">
+        <li class="nav item">
+            <a href="/tables/{{table}}" {% if table == active_page %}class="nav item bg-primary text-white" {% else %}class="nav item"{% endif %}>{{table}}</a>
+        </li>
+    </ul>
+
+    {% endif %}
+    {% endfor %}
+</div>
+</nav>
+{% endblock %}
+{% block content %}
+{% if not table_selected %}
+<div class="container">
+    <h1 class="text-center">Select table</h1>
+</div>
+{% endif %}
+<div class="table-responsive">
+<div class="container">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        <p class="text-justify">{{message}}</p>
+                    </div>
+            {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+    {% if table_selected %}
+    {% if role == 'Administrator' %}
+    <button type="button" class="btn btn-default btn-sm" onclick="location.href='/tables/{{tname}}/add'">
+        <span class="glyphicon glyphicon-plus"></span> Add record
+    </button>
+    {% endif %}
+    <button type="button" class="btn btn-default btn-sm" onclick="location.href='save/{{tname}}'">
+            <span class="glyphicon glyphicon-save"></span> Save as PDF
+        </button>
+    {% endif %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            {% for c in columns %}
+                <th>{{c}}</th>
+            {% endfor %}
+            {% if table_selected and role == 'Administrator' %}
+                <th>modify</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for c in columns %}
+                        <td>{{row|attr(c)}}</td>
+                    {% endfor %}
+                    {% if role == 'Administrator' %}
+                        <td>
+                            <button type="button" class="btn btn-default btn-sm" onclick="location.href='/tables/{{tname}}/edit/{{row.id}}'">
+                                <span class="glyphicon glyphicon-pencil" style="color: #009246"></span> Edit
+                            </button>
+                            <button type="button" class="btn btn-default btn-sm" onclick="del('{{tname}}', {{row.id}})">
+                                <span class="glyphicon glyphicon-remove" style="color: #bf0000"></span> Remove
+                            </button>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

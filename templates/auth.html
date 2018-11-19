@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Authorization
+    </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+    <nav class="navbar">
+      <div class="container-fluid nav">
+        <div class="navbar-header">
+          <p class="navbar-brand title">Pharmacy</p>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/auth"><span class="glyphicon glyphicon-log-in"></span> Log in</a></li>
+        </ul>
+      </div>
+    </nav>
+<div class="container">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+            {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+<div class="form-container">
+      <form class="form-signin" method="post">
+        <h2 class="form-signin-heading">Authorization</h2>
+        <label for="login" class="sr-only">Login</label>
+        <input type="text" id="login" name="login" class="form-control" placeholder="Login" required="" autofocus="">
+        <br>
+        <label for="login" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required="">
+        <br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </form>
+</div>
+</div>

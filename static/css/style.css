@@ -1,0 +1,78 @@
+@font-face {
+    font-family: MyriadProBold;
+    src: url('/static/fonts/MyriadProBold.woff') format('woff');
+}
+
+.title {
+    font-family: MyriadProBold;
+    font-size: 20pt;
+}
+
+.navbar {
+    margin-bottom: 0px;
+    background-color: #FFFFFF;
+}
+
+li {
+    font-size: 16pt;
+    color: #FFFFFF;
+}
+.form-container {
+    max-width: 30%;
+    margin: 0 auto;
+}
+
+
+#container {
+    overflow-x: auto;
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+.tablelist {
+    display: inline-block;
+    float: left;
+    background-color: #393C4B;
+}
+
+.info {
+    display: inline-block
+    width: 70%;
+    padding-left: 5px;
+    float: left;
+}
+
+
+ul {
+    padding-left: 5px;
+    list-style-type: none;
+}
+
+
+.hello {
+    transform: translate(-50%, -50%);
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    color: #000000;
+}
+
+.container-fluid{
+    background-color: #D3D3D3;
+}
+
+.navbar {
+    padding-bottom: 10px;
+}
+
+.divider {
+    width: 700px;
+    border-top: 2px solid #f8f8f8;
+    border-bottom: 2px solid rgba(0,0,0,0.2);
+}
+
+.navbar-brand {
+    margin-left: 0 !important;
+}

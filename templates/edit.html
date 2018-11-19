@@ -1,0 +1,46 @@
+{% extends 'wrapper.html' %}
+{% block title %}Editing{% endblock %}
+{% block role %}{{role}}{% endblock %}
+{% block content %}
+<div class="container">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'info' %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
+                    </div>
+                {% elif category == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                {% endif%}
+            {% endfor %}
+    {% endif %}
+{% endwith %}
+<h2>Editing <a href="/tables/{{tname}}">{{tname}}</a></h2>
+<div class="form-group">
+    <form method="post" action="/tables/{{tname}}/edit/{{id}}">
+        {% for c in columns %}
+            <label>{{c}}</label>
+            {% if c == 'id' %}
+                <input type="text" required readonly class="form-control" name="{{c}}" value="{{row|attr(c)}}">
+            {% elif c == 'status' %}
+                <br>
+                {% if row|attr(status) == True %}
+                    <input type="radio" name="status" value="1" checked> True<br>
+                    <input type="radio" name="status" value="0"> False<br>
+                {% else %}
+                    <input type="radio" name="status" value="1"> True<br>
+                    <input type="radio" name="status" value="0" checked> False<br>
+                {% endif %}
+            {% else %}
+                <input type="text" required class="form-control" name="{{c}}" value="{{row|attr(c)}}">
+            {% endif %}
+        {% endfor %}
+        <br>
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+</div>
+{% endblock %}

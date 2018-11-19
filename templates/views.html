@@ -1,0 +1,49 @@
+{% extends 'wrapper.html' %}
+{% set active_page = viewname %}
+{% block role %}{{role}}{% endblock %}
+{% block title %}Views{% endblock %}
+{% block sidebar %}
+<nav class="col-md-3 d-none d-md-block sidebar container">
+<div class="sidebar-sticky">
+    {% for view in views %}
+    <ul class="nav">
+        <li class="nav item">
+            <a href="/views/{{view}}" {% if view == active_page %}class="nav item bg-primary text-white" {% else %}class="nav item"{% endif %}>{{view}}</a>
+        </li>
+    </ul>
+    {% endfor %}
+</div>
+</nav>
+{% endblock %}
+{% block content %}
+{% if not view_selected %}
+<div class="container">
+    <h1 class="text-center">Select view</h1>
+</div>
+{% endif %}
+<div class="table-responsive">
+    {% if view_selected %}
+    <button type="button" class="btn btn-default btn-sm" onclick="location.href='save/{{view}}'">
+            <span class="glyphicon glyphicon-save"></span> Save as PDF
+    </button>
+    {% endif %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            {% for c in columns %}
+                <th>{{c}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for c in columns %}
+                        <td>{{row|attr(c)}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

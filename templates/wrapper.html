@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}{% endblock %}
+    </title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div id="container">
+    <nav class="navbar">
+      <div class="container-fluid nav">
+        <div class="navbar-header">
+          <p class="navbar-brand title">Pharmacy</p>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/home">Main page</a></li>
+            <li class="active"><a href="/tables">Tables</a></li>
+            <li class="active"><a href="/views">Views</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="navbar-text active">You are logged in as {% block role %}{% endblock %}</li>
+          <li><a href="/auth"><span class="glyphicon glyphicon-log-out"></span> Log out</a></li>
+        </ul>
+      </div>
+    </nav>
+    {% block sidebar %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+</div>
+<script src="{{ url_for('static', filename='script/script.js') }}"></script>
+</body>
+</html>
