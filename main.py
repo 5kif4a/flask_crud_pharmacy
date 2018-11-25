@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 import pdfkit
 import models as mdl
 import config
@@ -223,8 +224,30 @@ def save_as_pdf(entity, obj):
         return redirect(url_for('login'))
 
 
+@app.route('/queries')  # запросы на выборку
+def query():
+    pass
+
+
+@app.route('/procedures')  # хранимые процедуры
+def procedure():
+    if session.get('logined'):
+        try:
+            db.session.query(func.myproc3(11)).all()
+            # or db.session.execute('SELECT "myproc3"(11)')
+            db.session.commit()
+            return render_template('procedures.html', role=session['role'])
+        except Exception as e:
+            print(e)
+            abort(404)
+    else:
+        flash('You are not logged in')
+        return redirect(url_for('login'))
+
+
 @app.errorhandler(404)  # 404 page
 def page404(e):
+    print(e)
     return render_template('404.html'), 404
 
 
