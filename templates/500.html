@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Page not found</title>
+    <title>Error occured</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 </head>
 <body>
@@ -10,10 +10,12 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12 text-center">
-                <span class="display-1 d-block">404</span>
-                <div class="mb-4 lead">Page not found</div>
-                <img src="{{ url_for('static', filename='images/page not found.jpg') }}" class="img-fluid w-50 h-50">
-                <div><a href="/home" class="btn btn-link">Return to home</a></div>
+                <span class="display-1 d-block">500</span>
+                <div class="mb-4 lead">Interval Server Error</div>
+                <img src="{{ url_for('static', filename='images/произошел exception.png') }}" class="img-fluid w-50 h-50">
+                <div>
+                    <a href="/home" class="btn btn-link">Return to home</a>
+                </div>
             </div>
         </div>
     </div>

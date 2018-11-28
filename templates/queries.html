@@ -1,0 +1,50 @@
+{% extends 'wrapper.html' %}
+{% set active_page = query_n %}
+{% block title %}Queries{% endblock %}
+{% block role %}{{role}}{% endblock %}
+{% block sidebar %}
+<nav class="col-md-3 d-none d-md-block sidebar container">
+<div class="sidebar-sticky">
+    <ul class="nav">
+        {% for i in range(5) %}
+        <li class="nav item">
+            <a href="/queries/{{i+1}}" {% if (i+1) == active_page|int %}class="nav item bg-primary text-white" {% else %}class="nav item"{% endif %}>Query #{{i+1}}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+</nav>
+{% endblock %}
+{% block content %}
+{% if not query_selected %}
+<div class="container">
+    <h1 class="text-center">Select query</h1>
+</div>
+{% endif %}
+<div class="table-responsive">
+    {% if query_selected %}
+    <div class="alert alert-info">Query description<br>{{description}}</div>
+    <button type="button" class="btn btn-default btn-sm" onclick="location.href='save/{{query_n}}'">
+            <span class="glyphicon glyphicon-save"></span> Save as PDF
+        </button>
+    {% endif %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            {% for c in columns %}
+                <th>{{c}}</th>
+            {% endfor %}
+        </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for c in columns %}
+                        <td>{{row|attr(c)}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'wrapper.html' %}
+{% block title %}Store procedures{% endblock %}
+{% block role %}{{role}}{% endblock %}
+{% block sidebar %}
+<nav class="col-md-3 d-none d-md-block sidebar container">
+<div class="sidebar-sticky">
+</div>
+</nav>
+{% endblock %}
+<div class="container">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+            {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        <p class="text-justify">{{message}}</p>
+                    </div>
+            {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+{% block content %}
+{% endblock %}

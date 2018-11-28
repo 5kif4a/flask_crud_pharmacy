@@ -1,5 +1,11 @@
+# REFACTOR THIS CODE
+# repeating code
+# large block nesting level
+# need MORE functions and decorators
 from flask import Flask, render_template, request, session, redirect, url_for, flash, abort, make_response
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
+from queries import queries_, description_
 import pdfkit
 import models as mdl
 import config
@@ -7,6 +13,8 @@ import config
 app = Flask('Pharmacy', template_folder='templates', static_url_path='/static')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = config.URL
+app.config['SQLALCHEMY_POOL_SIZE'] = 100
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 0
 app.secret_key = config.KEY
 db = SQLAlchemy(app)
 db.Model.metadata.reflect(db.engine)  # get data from existing db
@@ -20,12 +28,16 @@ def check(model, login_name, password):  # authentication
 
 
 def render_html(obj):  # для сохранения в pdf
-    model = mdl.get_class_by_tablename(obj)
-    columns = model.__table__.columns.keys()
-    data = model.query.order_by(model.id).all()
-    db.session.commit()
-    db.session.close()
-    return render_template('pdf_template.html', entity=obj, columns=columns, data=data)
+    try:
+        data = db.session.execute(queries_[int(obj)-1])
+        columns = data.keys()
+        return render_template('pdf_template.html', entity='Query #{}'.format(int(obj)), data=data, columns=columns)
+    except TypeError:
+        model = mdl.get_class_by_tablename(obj)
+        columns = model.__table__.columns.keys()
+        data = model.query.order_by(model.id).all()
+        db.session.commit()
+        return render_template('pdf_template.html', entity=obj, data=data, columns=columns)
 
 
 @app.route('/')  # redirect to home page
@@ -88,8 +100,9 @@ def table(tname):
             db.session.close()
             return render_template('tables.html', tname=tname, tables=sorted(mdl.tables), columns=columns, data=data,
                                    role=session['role'], table_selected=True)
-        except Exception:
-            abort(404)
+        except Exception as e:
+            print(e)
+            abort(500)
     elif session['role'] == 'User' and (tname == 'Admins' or tname == 'Users'):
         flash('You don\'t have permission for this')
         return redirect(url_for('tables'))
@@ -111,7 +124,8 @@ def add(table):
                 db.session.commit()
                 db.session.close()
                 flash('Row inserted', 'info')
-        except Exception:
+        except Exception as e:
+            print(e)
             flash('Error occured. Check the correctness of input data', 'error')
         return render_template('add.html', tname=table, columns=columns, role=session['role'])
     elif session.get('logined') and session.get('role') == 'User':
@@ -146,9 +160,10 @@ def modify(table, id):
                     return render_template('edit.html', tname=table, columns=columns, id=obj.id, row=obj,
                                            role=session['role'])
                 except Exception as e:
+                    print(e)
                     flash('Error occured. Check the correctness of input data', 'error')
         else:  # поле не существует
-            return abort(404)
+            return abort(500)
         return render_template('edit.html', tname=table, columns=columns, id=obj.id, row=obj,
                                role=session['role'])
     elif session.get('logined') and session.get('role') == 'User':   # если зашел как юзер
@@ -169,8 +184,9 @@ def delete(table, id):                                      # надо как т
                 db.session.commit()
                 db.session.close()
                 return redirect(url_for('table', tname=table))  # переходим на страницу с таблицой
-            except Exception:
-                abort(404)
+            except Exception as e:
+                print(e)
+                abort(500)
     elif session.get('logined') and session.get('role') == 'User':  # если зашел как юзер
         flash('You don\'t have permission for this')  # юзеру нельзя удалять
         return redirect(url_for('table', tname=table))  # переходим на страницу с таблицой
@@ -198,7 +214,7 @@ def get_view(view):
                                    data=data, role=session['role'], view_selected=True)
         except Exception as e:
             print(e)
-            abort(404)
+            abort(500)
     else:
         flash('You are not logged in')
         return redirect(url_for('login'))
@@ -217,7 +233,59 @@ def save_as_pdf(entity, obj):
             return response
         except Exception as e:
             print(e)
-            abort(404)
+            abort(500)
+    else:
+        flash('You are not logged in')
+        return redirect(url_for('login'))
+
+
+@app.route('/queries', methods=['GET'])  # show all queries
+def queries():
+    if session.get('logined'):
+        return render_template('queries.html', role=session['role'], query_selected=False, query_n=None)
+    else:
+        return redirect(url_for('login'))
+
+
+@app.route('/queries/<q>', methods=['GET', 'POST'])  # запросы на выборку
+def query(q):
+    if session.get('logined'):
+        try:
+            data = db.session.execute(queries_[int(q)-1])
+            db.session.commit()
+            return render_template('queries.html', role=session['role'], data=data, columns=data.keys(),
+                                   query_selected=True, query_n=q, description=description_[int(q)-1])
+        except Exception as e:
+            print(e)
+            abort(500)
+    else:
+        flash('You are not logged in')
+        return redirect(url_for('login'))
+
+
+@app.route('/procedures/<p>')  # хранимые процедуры
+def procedure(p):
+    if session.get('logined'):
+        proc_selected = True
+        try:
+            if p is 1:  # doc_code smallint returns table
+                param = request.form['param']
+                data = db.session.query(func.myproc1(param)).all()
+            elif p is 2:  # price money  returns table
+                param = request.form['param']
+                data = db.session.query(func.myproc2(param)).all()
+            elif p is 3:  # start_value integer returns void
+                param = request.form['param']
+                data = db.session.query(func.myproc3(param)).all()
+            elif p is 4:  # pr_type smallint  returns table
+                param = request.form['param']
+                data = db.session.query(func.myproc4(param)).all()
+            db.session.commit()
+            return render_template('procedures.html', role=session['role'], data=data,
+                                   proc_selected=proc_selected)
+        except Exception as e:
+            print(e)
+            abort(500)
     else:
         flash('You are not logged in')
         return redirect(url_for('login'))
@@ -226,6 +294,11 @@ def save_as_pdf(entity, obj):
 @app.errorhandler(404)  # 404 page
 def page404(e):
     return render_template('404.html'), 404
+
+
+@app.errorhandler(500)  # 500 internal server error
+def page500(e):
+    return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
