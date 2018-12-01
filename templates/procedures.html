@@ -1,22 +1,70 @@
 {% extends 'wrapper.html' %}
+{% set active_page = proc_n %}
 {% block title %}Store procedures{% endblock %}
 {% block role %}{{role}}{% endblock %}
 {% block sidebar %}
 <nav class="col-md-3 d-none d-md-block sidebar container">
 <div class="sidebar-sticky">
+    <ul class="nav">
+        {% for i in range(4) %}
+        <li class="nav item">
+            <a href="/procedures/{{i+1}}" {% if (i+1) == active_page|int %}class="nav item bg-primary text-white" {% else %}class="nav item"{% endif %}>Procedure #{{i+1}}</a>
+        </li>
+        {% endfor %}
+    </ul>
 </div>
 </nav>
 {% endblock %}
+{% block content %}
+{% if not proc_selected %}
 <div class="container">
-{% with messages = get_flashed_messages() %}
+    <h1 class="text-center">Select procedure</h1>
+</div>
+{% endif %}
+<div class="table-responsive">
+   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-            {% for message in messages %}
-                    <div class="alert alert-danger" role="alert">
-                        <p class="text-justify">{{message}}</p>
+            {% for category, message in messages %}
+                {% if category == 'info' %}
+                    <div class="alert alert-success" role="alert">
+                        {{message}}
                     </div>
+                {% elif category == 'error' %}
+                    <div class="alert alert-danger" role="alert">
+                        {{message}}
+                    </div>
+                {% endif%}
             {% endfor %}
     {% endif %}
 {% endwith %}
+    {% if proc_selected %}
+    <div class="alert alert-info">Procedure description<br>{{description}}</div>
+    <div class="form-group">
+    <form method="post" action="/procedures/{{proc_n}}">
+        <label>{{param}}</label>
+        <input type="text" required class="form-control" name="param" id="param" placeholder="Enter parameter">
+        <br>
+        <button type="submit" class="btn btn-primary">Execute</button>
+    </form>
 </div>
-{% block content %}
+    <table class="table table-hover">
+        <thead>
+        <tr>
+        {% for c in columns %}
+                <th>{{c}}</th>
+            {% endfor %}
+        </thead>
+        </tr>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    {% for c in columns %}
+                        <td>{{row|attr(c)}}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 {% endblock %}

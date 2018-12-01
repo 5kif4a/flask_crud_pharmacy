@@ -1,4 +1,5 @@
 from main import db
+import hashlib
 from sqlalchemy.dialects.postgresql import MONEY
 
 views = ('Country list', 'Recipes list', 'Finance report')  # представления
@@ -146,7 +147,7 @@ class Admin(db.Model):  # Роли
     def __init__(self, id_, login, password):
         self.id = id_
         self.login = login
-        self.password = password
+        self.password = hashlib.sha256(password.encode('utf8')).hexdigest()
 
     def __repr__(self):
         return '{} {} {}'.format(self.id, self.login, self.password)
@@ -158,7 +159,7 @@ class User(db.Model):
     def __init__(self, id_, login, password):
         self.id = id_
         self.login = login
-        self.password = password
+        self.password = hashlib.sha256(password.encode('utf8')).hexdigest()
 
     def __repr__(self):
         return '{} {} {}'.format(self.id, self.login, self.password)

@@ -28,11 +28,11 @@
             {% elif c == 'status' %}
                 <br>
                 {% if row.status %}
-                    <input type="radio" name="status" value="" checked> True<br>
-                    <input type="radio" name="status" value=""> False<br>
+                    <input type="radio" name="status" value="1" checked> True<br>
+                    <input type="radio" name="status" value="0"> False<br>
                 {% else %}
-                    <input type="radio" name="status" value=""> True<br>
-                    <input type="radio" name="status" value="" checked> False<br>
+                    <input type="radio" name="status" value="1"> True<br>
+                    <input type="radio" name="status" value="0" checked> False<br>
                 {% endif %}
             {% else %}
                 <input type="text" required class="form-control" name="{{c}}" value="{{row|attr(c)}}">

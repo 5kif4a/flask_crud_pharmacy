@@ -31,7 +31,6 @@
 </div>
 {% endif %}
 <div class="table-responsive">
-<div class="container">
 {% with messages = get_flashed_messages() %}
     {% if messages %}
             {% for message in messages %}
@@ -41,7 +40,6 @@
             {% endfor %}
     {% endif %}
 {% endwith %}
-</div>
     {% if table_selected %}
     {% if role == 'Administrator' %}
     <button type="button" class="btn btn-default btn-sm" onclick="location.href='/tables/{{tname}}/add'">
