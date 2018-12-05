@@ -1,0 +1,35 @@
+{% extends 'wrapper.html' %}
+{% block title %}Help{% endblock %}
+{% block role %}{{role}}{% endblock %}
+{% block content %}
+<h1 class="text-center">Help system</h1>
+<ul class="list-group">
+    <li class="list-group-item list-group-item-info">
+        <h3>Tab "Tables"</h3>
+        This tab contains all the database tables.<br>
+        If you are an administrator, you can add, edit, delete data in tables.<br>
+        If in the process of modifying data integrity constraints are violated, "appears" warning messages.
+    </li>
+    <li class="list-group-item list-group-item-info">
+        <h3>Tab "Queries"</h3>
+        This tab contains queries (reports) for a selection from the database.<br>
+        Each query has a description.
+    </li>
+    <li class="list-group-item list-group-item-info">
+        <h3>Tab "Views"</h3>
+        This tab contains views (reports) of the database.<br>
+        Each view has a description.<br>
+        In the views of the data can not be edited.
+    </li>
+    <li class="list-group-item list-group-item-info">
+        <h3>Tab "Store procedures" (Only for Administrators)</h3>
+        This tab contains stored procedures.<br>
+        Each procedure has a description.<br>
+        To call and execute a stored procedure, you need to select a procedure and set the required parameter.
+    </li>
+    <li class="list-group-item list-group-item-info">
+        <h3>Saving reports as PDF file</h3>
+        You can save reports of tables, sample queries, views in the PDF format.
+    </li>
+</ul>
+{% endblock %}

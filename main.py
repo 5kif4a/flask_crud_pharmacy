@@ -55,6 +55,14 @@ def home():
         return render_template('home.html', role=session['role'])
 
 
+@app.route('/help')  # home page
+def help():
+    if not session.get('logined'):
+        return redirect(url_for('login'))
+    else:
+        return render_template('help.html', role=session['role'])
+
+
 @app.route('/auth', methods=['GET', 'POST'])  # authorization
 def login():
     if request.method == 'POST':

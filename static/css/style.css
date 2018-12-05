@@ -49,16 +49,6 @@ ul {
 }
 
 
-.hello {
-    transform: translate(-50%, -50%);
-    margin: auto;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    text-align: center;
-    color: #000000;
-}
-
 .container-fluid{
     background-color: #D3D3D3;
 }
